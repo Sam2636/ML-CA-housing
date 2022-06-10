@@ -75,3 +75,4 @@ plt.figure(figsize=(12,6))
 sns.boxplot(data=df,x='ocean_proximity',y='median_house_value');
 plt.show()
 
+dxqwefqerf
