@@ -1,3 +1,4 @@
+#from statistics import linear_regression
 import pandas as pd
 import numpy as np
 
@@ -73,6 +74,114 @@ df.ocean_proximity.value_counts()
 #visulaization(occurence of ocean proximity)
 plt.figure(figsize=(12,6))
 sns.boxplot(data=df,x='ocean_proximity',y='median_house_value');
-plt.show()
+#plt.show()
 
-dxqwefqerf
+#encode categorical data
+
+df['ocean_proximity'].replace({"INLAND":0,
+                                "<1H OCEAN":1,
+                               "NEAR OCEAN":2,
+                               "NEAR BAY":3,        
+                               "ISLAND":4},inplace=True)
+
+#####data split
+#train test split
+
+x=df.drop(['median_house_value'],axis=1).values
+y=df['median_house_value'].values
+
+from sklearn.model_selection import train_test_split
+
+#split the data into train and test
+x_train,x_test,y_train,y_test=train_test_split(x,y,test_size=0.2,random_state=1)
+
+print(x_train.shape)
+print(x_test.shape)
+print(y_train.shape)
+print(y_test.shape)
+
+###model building
+#**KNN REGRESSOR**
+
+from sklearn import metrics
+from sklearn.neighbors import KNeighborsRegressor
+
+knn=KNeighborsRegressor(n_neighbors=11,metric='minkowski',p=2,weights='uniform')
+
+#fit the model to the training data
+knn.fit(x_train,y_train)
+
+#making prediction on the testing set
+y_pred=knn.predict(x_test)
+
+print("---------------------knn---------------------")
+
+print('Mean Absolute Error:',metrics.mean_absolute_error(y_test,y_pred))
+print('Mean Squared Error:',metrics.mean_squared_error(y_test,y_pred))
+print('Root Mean Squared Error:',np.sqrt(metrics.mean_squared_error(y_test,y_pred)))
+print('R2 Score:',metrics.r2_score(y_test,y_pred))
+
+#print(df.describe().T)
+
+#------------------------------------------------knn-scaling--------------------------------------------------
+#lets scale this
+scaler=RobustScaler()
+
+x_train_scaled=scaler.fit_transform(x_train)
+x_test_scaled=scaler.transform(x_test)
+
+knn=KNeighborsRegressor(n_neighbors=11,metric='minkowski',p=2,weights='uniform')
+
+#fit the model to the training data
+knn.fit(x_train_scaled,y_train)
+
+#making prediction on the testing set
+y_pred=knn.predict(x_test_scaled)
+
+print("---------------------knn-scaling---------------------")
+
+print('Mean Absolute Error:',metrics.mean_absolute_error(y_test,y_pred))
+print('Mean Squared Error:',metrics.mean_squared_error(y_test,y_pred))
+print('Root Mean Squared Error:',np.sqrt(metrics.mean_squared_error(y_test,y_pred)))
+print('R2 Score:',metrics.r2_score(y_test,y_pred))
+
+
+#------------------linear regression--------------------
+from sklearn.linear_model import LinearRegression
+
+lR=LinearRegression()
+
+#fit the model to the training data
+lR.fit(x_train,y_train)
+
+#making prediction on the testing set
+y_pred=lR.predict(x_test)
+print("--------------linear regression--------------------")
+
+print('Mean Absolute Error:',metrics.mean_absolute_error(y_test,y_pred))
+print('Mean Squared Error:',metrics.mean_squared_error(y_test,y_pred))
+print('Root Mean Squared Error:',np.sqrt(metrics.mean_squared_error(y_test,y_pred)))
+print("MAPE:",np.mean(abs((y_test-y_pred)/y_test))*100)
+print("MPE:",np.mean(y_test-y_pred/y_test)*100)
+print('R2 Score:',metrics.r2_score(y_test,y_pred))
+
+#----------------scaling linear regression--------------------
+
+from sklearn.linear_model import LinearRegression
+
+lR=LinearRegression()
+
+#fit the model to the training data
+lR.fit(x_train_scaled,y_train)
+
+#making prediction on the testing set
+y_pred=lR.predict(x_test_scaled)
+
+print("-------------scaling-linear-regression----------------")
+
+print('Mean Absolute Error:',metrics.mean_absolute_error(y_test,y_pred))
+print('Mean Squared Error:',metrics.mean_squared_error(y_test,y_pred))
+print('Root Mean Squared Error:',np.sqrt(metrics.mean_squared_error(y_test,y_pred)))
+print("MAPE:",np.mean(abs((y_test-y_pred)/y_test))*100)
+print("MPE:",np.mean(y_test-y_pred/y_test)*100)
+print('R2 Score:',metrics.r2_score(y_test,y_pred))
