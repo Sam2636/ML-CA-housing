@@ -74,7 +74,8 @@ df.ocean_proximity.value_counts()
 #visulaization(occurence of ocean proximity)
 plt.figure(figsize=(12,6))
 sns.boxplot(data=df,x='ocean_proximity',y='median_house_value');
-#plt.show()
+
+plt.show()
 
 #encode categorical data
 
@@ -185,3 +186,45 @@ print('Root Mean Squared Error:',np.sqrt(metrics.mean_squared_error(y_test,y_pre
 print("MAPE:",np.mean(abs((y_test-y_pred)/y_test))*100)
 print("MPE:",np.mean(y_test-y_pred/y_test)*100)
 print('R2 Score:',metrics.r2_score(y_test,y_pred))
+
+
+#-------------------bonus question--------------------
+x_bonus=df[['median_income']].values
+y_bonus=df['median_house_value'].values
+
+#train test split
+x_train_bonus,x_test_bonus,y_train_bonus,y_test_bonus=train_test_split(x_bonus,y_bonus,test_size=0.2,random_state=1)
+
+knn=KNeighborsRegressor(n_neighbors=11,metric='minkowski',p=2,weights='uniform')
+
+#fit the model to the training data
+knn.fit(x_train_bonus,y_train_bonus)
+
+#making prediction on the testing set
+y_pred=knn.predict(x_test_bonus)
+
+print("---------------------bonus----knn---------------------")
+
+print('Mean Absolute Error:',metrics.mean_absolute_error(y_test_bonus,y_pred))
+print('Mean Squared Error:',metrics.mean_squared_error(y_test_bonus,y_pred))
+print('Root Mean Squared Error:',np.sqrt(metrics.mean_squared_error(y_test_bonus,y_pred)))
+print('R2 Score:',metrics.r2_score(y_test_bonus,y_pred))
+
+#-------------------bonus linear Regression--------------------
+
+lR=LinearRegression()
+
+#fit the model to the training data
+lR.fit(x_train_bonus,y_train_bonus)
+
+#making prediction on the testing set
+y_pred=lR.predict(x_test_bonus)
+
+print("-------------bonus-linear-regression----------------")
+
+print('Mean Absolute Error:',metrics.mean_absolute_error(y_test_bonus,y_pred))
+print('Mean Squared Error:',metrics.mean_squared_error(y_test_bonus,y_pred))
+print('Root Mean Squared Error:',np.sqrt(metrics.mean_squared_error(y_test_bonus,y_pred)))
+print("MAPE:",np.mean(abs((y_test_bonus-y_pred)/y_test))*100)
+print("MPE:",np.mean(y_test_bonus-y_pred/y_test_bonus)*100)
+print('R2 Score:',metrics.r2_score(y_test_bonus,y_pred))
